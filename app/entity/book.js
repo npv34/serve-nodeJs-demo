@@ -1,7 +1,7 @@
 'use strict'
 
 class Book {
-  constructor (id, name = '', read = false) {
+  constructor (id, name, read = false) {
     this.id = id
     this.name = name
     this.read = read
@@ -15,12 +15,8 @@ class Book {
     return new Book(this.id, name, this.read)
   }
 
-  unread () {
-    return new Book(this.id, this.name, false)
-  }
-
-  readed () {
-    return new Book(this.id, this.name, true)
+  readed (read) {
+    return new Book(this.id, this.name, !!read)
   }
 }
 

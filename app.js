@@ -1,17 +1,56 @@
+const BookService = require('./app/service/book-service')
 const Book = require('./app/entity/book')
+const restify = require('restify')
 
-let restify = require('restify')
+let log = console.log
+let bookService = new BookService()
 
-function books (req, res, next) {
-  let b = new Book()
-    .withName('greeting')
-    .unread()
-  res.send([b, b.withName('world'), b.readed()])
-  next()
+function parseBook (req, res, next) {
+  log(req.body.id, req.body.name, req.body.read)
+  let book = new Book()
+  if (req.body.id !== undefined) book.id = Number(req.body.id)
+  if (req.body.name !== undefined) book.name = req.body.name
+  if (req.body.read !== undefined) book.read = req.body.read === 'true'
+  log('parsed', book)
+  req.book = book
+  return next()
+}
+
+function all (req, res, next) {
+  res.send(bookService.getAll())
+  return next()
+}
+
+function one (req, res, next) {
+  let id = Number(req.params.id)
+  res.send(bookService.get(id))
+  return next()
+}
+
+function add (req, res, next) {
+  res.send(bookService.add(req.book))
+  return next()
+}
+
+function update (req, res, next) {
+  res.send(bookService.update(req.book))
+  return next()
+}
+
+function patch (req, res, next) {
+  res.send(bookService.patch(req.book))
+  return next()
 }
 
 let server = restify.createServer()
-server.get('/books', books)
+server.use(restify.plugins.queryParser())
+server.use(restify.plugins.jsonp())
+server.use(restify.plugins.bodyParser())
+server.get('/books', all)
+server.get('/books/:id', one)
+server.post('/books', parseBook, add)
+server.put('/books', parseBook, update)
+server.patch('/books', parseBook, patch)
 
 server.listen(8081, function () {
   console.log('%s listening at %s', server.name, server.url)

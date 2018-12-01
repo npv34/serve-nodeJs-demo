@@ -1,3 +1,5 @@
+'use strict'
+
 const BookService = require('./app/service/book-service')
 const Book = require('./app/entity/book')
 const restify = require('restify')
@@ -18,8 +20,12 @@ function parseBook (req, res, next) {
 
 function hasId (req, res, next) {
   if (!req.book) return next(new Error('couldnt get book from request!'))
-  if (req.book.id == undefined) return next(new Error('lack of id!'))
+  if (isNil(req.book.id)) return next(new Error('lack of id!'))
   return next()
+
+  function isNil (value) {
+    return value == null
+  }
 }
 
 function all (req, res, next) {

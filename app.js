@@ -1,13 +1,18 @@
-let restify = require('restify');
+const Book = require('./app/entity/book')
 
-function respond(req, res, next) {
-    res.send('hello');
-    next();
+let restify = require('restify')
+
+function books (req, res, next) {
+  let b = new Book()
+    .withName('greeting')
+    .unread()
+  res.send([b, b.withName('world'), b.readed()])
+  next()
 }
 
-let server = restify.createServer();
-server.get('/books', respond);
+let server = restify.createServer()
+server.get('/books', books)
 
-server.listen(8081, function() {
-    console.log('%s listening at %s', server.name, server.url);
-});
+server.listen(8081, function () {
+  console.log('%s listening at %s', server.name, server.url)
+})

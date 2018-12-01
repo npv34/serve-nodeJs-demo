@@ -6,13 +6,19 @@ let log = console.log
 let bookService = new BookService()
 
 function parseBook (req, res, next) {
-  log(req.body.id, req.body.name, req.body.read)
+  if (!req.body) return next(new Error('couldnt parse book from request!'))
+
   let book = new Book()
   if (req.body.id !== undefined) book.id = Number(req.body.id)
   if (req.body.name !== undefined) book.name = req.body.name
   if (req.body.read !== undefined) book.read = req.body.read === 'true'
-  log('parsed', book)
   req.book = book
+  return next()
+}
+
+function hasId (req, res, next) {
+  if (!req.book) return next(new Error('couldnt get book from request!'))
+  if (req.book.id == undefined) return next(new Error('lack of id!'))
   return next()
 }
 
@@ -49,8 +55,8 @@ server.use(restify.plugins.bodyParser())
 server.get('/books', all)
 server.get('/books/:id', one)
 server.post('/books', parseBook, add)
-server.put('/books', parseBook, update)
-server.patch('/books', parseBook, patch)
+server.put('/books', parseBook, hasId, update)
+server.patch('/books', parseBook, hasId, patch)
 
 server.listen(8081, function () {
   console.log('%s listening at %s', server.name, server.url)

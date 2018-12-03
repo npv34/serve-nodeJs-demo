@@ -3,10 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "build": "babel src/ -d lib/",
+    "start": "node app.js",
+    "flow": "flow"
   },
   "dependencies": {
     "restify": "^7.2.3",
     "restify-cors-middleware": "^1.1.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.87.0"
   }
 }

@@ -1,3 +1,5 @@
+/* @flow */
+
 const BookService = require('./app/service/book-service')
 const Book = require('./app/entity/book')
 const restify = require('restify')
@@ -8,7 +10,6 @@ const cors = corsMiddleware({
   exposeHeaders: ['API-Token-Expiry']
 })
 
-let log = console.log
 let bookService = new BookService()
 
 function parseBook (req, res, next) {
@@ -59,11 +60,11 @@ function patch (req, res, next) {
 }
 
 let server = restify.createServer()
-server.pre(cors.preflight)
-server.use(cors.actual)
-server.use(restify.plugins.queryParser())
-server.use(restify.plugins.jsonp())
-server.use(restify.plugins.bodyParser())
+  .pre(cors.preflight)
+  .use(cors.actual)
+  .use(restify.plugins.queryParser())
+  .use(restify.plugins.jsonp())
+  .use(restify.plugins.bodyParser())
 
 server.get('/books', all)
 server.get('/books/:id', one)

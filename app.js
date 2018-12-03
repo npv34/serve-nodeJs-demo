@@ -1,11 +1,9 @@
-'use strict'
-
 const BookService = require('./app/service/book-service')
 const Book = require('./app/entity/book')
 const restify = require('restify')
 const corsMiddleware = require('restify-cors-middleware')
 const cors = corsMiddleware({
-  origins: ['*'],
+  origins: ['http://localhost'],
   allowHeaders: ['API-Token'],
   exposeHeaders: ['API-Token-Expiry']
 })
@@ -61,11 +59,11 @@ function patch (req, res, next) {
 }
 
 let server = restify.createServer()
-  .pre(cors.preflight)
-  .use(cors.actual)
-  .use(restify.plugins.queryParser())
-  .use(restify.plugins.jsonp())
-  .use(restify.plugins.bodyParser())
+server.pre(cors.preflight)
+server.use(cors.actual)
+server.use(restify.plugins.queryParser())
+server.use(restify.plugins.jsonp())
+server.use(restify.plugins.bodyParser())
 
 server.get('/books', all)
 server.get('/books/:id', one)

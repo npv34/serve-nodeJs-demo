@@ -3,9 +3,9 @@ const Book = require('./app/entity/book')
 const restify = require('restify')
 const corsMiddleware = require('restify-cors-middleware')
 const cors = corsMiddleware({
-  origins: ['http://localhost'],
+  origins: ['*'],
   allowHeaders: ['API-Token'],
-  exposeHeaders: ['API-Token-Expiry']
+  exposeHeaders: ['API-Token-Expiry'],
 })
 
 let bookService = new BookService()
@@ -36,6 +36,11 @@ function all (req, res, next) {
   return next()
 }
 
+function log (req, res, next) {
+  console.log({ 'headers': req.headers, 'body': req.body })
+  return next()
+}
+
 function one (req, res, next) {
   let id = Number(req.params.id)
   res.send(bookService.get(id))
@@ -57,12 +62,13 @@ function patch (req, res, next) {
   return next()
 }
 
-let server = restify.createServer()
-  .pre(cors.preflight)
-  .use(cors.actual)
-  .use(restify.plugins.queryParser())
-  .use(restify.plugins.jsonp())
-  .use(restify.plugins.bodyParser())
+let server = restify.createServer().
+  pre(cors.preflight).
+  use(cors.actual).
+  use(restify.plugins.queryParser()).
+  use(restify.plugins.jsonp()).
+  use(restify.plugins.bodyParser()).
+  use(log)
 
 server.get('/books', all)
 server.get('/books/:id', one)

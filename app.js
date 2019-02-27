@@ -1,5 +1,3 @@
-/* @flow */
-
 const BookService = require('./app/service/book-service')
 const Book = require('./app/entity/book')
 const restify = require('restify')

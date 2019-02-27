@@ -1,25 +1,19 @@
-/* @flow */
-
 class Book {
-  id: ?number
-  name: ?string
-  read: ?boolean = false
-
-  constructor (id: ?number, name: ?string, read: ?boolean) {
+  constructor (id, name, read) {
     this.id = id
     this.name = name
     this.read = read
   }
 
-  withId (id: number) {
+  withId (id) {
     return new Book(id, this.name, this.read)
   }
 
-  withName (name: string) {
+  withName (name) {
     return new Book(this.id, name, this.read)
   }
 
-  readed (read: boolean) {
+  readed (read) {
     return new Book(this.id, this.name, !!read)
   }
 }
